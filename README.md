@@ -25,5 +25,6 @@ for the ReportMitra project using **GitHub Actions + AWS OIDC**.
 - `infra-start.yml` – Scheduled + manual start
 - `infra-stop.yml` – Scheduled + manual stop
 - `infra-start-manual.yml` – Manual emergency/testing start
+- `infra-stop-manual.yml` – Manual emergency/testing stop
 
 This setup reflects real-world DevOps best practices.
