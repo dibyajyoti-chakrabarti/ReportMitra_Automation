@@ -1,0 +1,29 @@
+name: Manual Stop Infrastructure
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  manual-stop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::855386719823:role/github-infra-control-role
+          aws-region: ap-south-1
+
+      - name: Stop EC2 instance
+        run: |
+          aws ec2 stop-instances \
+            --instance-ids i-03acbabc3588912c6 || true
+
+      - name: Stop RDS instance
+        run: |
+          aws rds stop-db-instance \
+            --db-instance-identifier reportmitra-mysql || true
