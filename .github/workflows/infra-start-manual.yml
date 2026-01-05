@@ -1,8 +1,6 @@
-name: Stop Infrastructure
+name: Manual Start Infrastructure
 
 on:
-  schedule:
-    - cron: "55 6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -10,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  stop-infra:
+  manual-start:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,12 +18,12 @@ jobs:
           role-to-assume: arn:aws:iam::855386719823:role/github-infra-control-role
           aws-region: ap-south-1
 
-      - name: Stop EC2 instance
+      - name: Start EC2 instance
         run: |
-          aws ec2 stop-instances \
-            --instance-ids i-03acbabc3588912c6
+          aws ec2 start-instances \
+            --instance-ids i-03acbabc3588912c6 || true
 
-      - name: Stop RDS instance
+      - name: Start RDS instance
         run: |
-          aws rds stop-db-instance \
+          aws rds start-db-instance \
             --db-instance-identifier reportmitra-mysql || true
