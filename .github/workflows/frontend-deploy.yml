@@ -1,0 +1,73 @@
+name: Frontend CI/CD Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # Required for AWS OIDC
+  contents: read
+
+jobs:
+  deploy-frontend:
+    name: Build & Deploy Frontend to S3 + CloudFront
+    runs-on: ubuntu-latest
+
+    env:
+      # Vite environment variables (injected securely)
+      VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+      VITE_KINDE_DOMAIN: ${{ secrets.VITE_KINDE_DOMAIN }}
+      VITE_KINDE_CLIENT_ID: ${{ secrets.VITE_KINDE_CLIENT_ID }}
+      VITE_KINDE_REDIRECT_URI: ${{ secrets.VITE_KINDE_REDIRECT_URI }}
+      VITE_KINDE_LOGOUT_URI: ${{ secrets.VITE_KINDE_LOGOUT_URI }}
+      VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
+
+    steps:
+      # 1. Checkout frontend source repo
+      - name: Checkout frontend repository
+        uses: actions/checkout@v4
+        with:
+          repository: dibyajyoti-chakrabarti/ReportMitra_FullStack
+          ref: main
+          path: ReportMitra_FullStack
+
+      # 2. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.21.1
+          cache: npm
+          cache-dependency-path: ReportMitra_FullStack/frontend/package-lock.json
+
+      # 3. Install dependencies
+      - name: Install frontend dependencies
+        working-directory: ReportMitra_FullStack/frontend
+        run: npm ci
+
+      # 4. Build frontend (production)
+      - name: Build frontend
+        working-directory: ReportMitra_FullStack/frontend
+        run: npm run build -- --mode production
+
+      # 5. Configure AWS credentials via OIDC
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::855386719823:role/github-frontend-deploy-role
+          aws-region: ap-south-1
+
+      # 6. Sync build output to S3 (full sync)
+      - name: Deploy to S3
+        run: |
+          aws s3 sync ReportMitra_FullStack/frontend/dist \
+            s3://www.reportmitra.in \
+            --delete
+
+      # 7. Invalidate CloudFront cache
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E3K3I6ZXEVAINS \
+            --paths "/*"
