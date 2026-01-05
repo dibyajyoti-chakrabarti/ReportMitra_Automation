@@ -1,9 +1,8 @@
 name: Frontend CI/CD Deployment
 
 on:
-  push:
-    branches:
-      - main
+  repository_dispatch:
+    types: [frontend-deploy]
   workflow_dispatch:
 
 permissions:
