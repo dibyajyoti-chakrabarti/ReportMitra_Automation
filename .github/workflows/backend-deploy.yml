@@ -1,0 +1,34 @@
+name: Backend CI/CD Deployment
+
+on:
+  repository_dispatch:
+    types: [backend-deploy]
+  workflow_dispatch:
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout backend source repo
+      - name: Checkout FullStack repository
+        uses: actions/checkout@v4
+        with:
+          repository: dibyajyoti-chakrabarti/ReportMitra_FullStack
+          ref: main
+          path: ReportMitra_FullStack
+
+      # 2. SSH and deploy backend
+      - name: Deploy backend via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ReportMitra_FullStack/backend
+            source venv/bin/activate
+            git pull origin main
+            sudo systemctl restart gunicorn
+            sudo systemctl reload nginx
