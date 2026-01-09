@@ -18,10 +18,15 @@ jobs:
           role-to-assume: arn:aws:iam::855386719823:role/github-infra-control-role
           aws-region: ap-south-1
 
-      - name: Start EC2 instance
+      - name: Start EC2 instance (User)
         run: |
           aws ec2 start-instances \
             --instance-ids i-03acbabc3588912c6 || true
+      
+      - name: Start EC2 instance (Admin)
+        run: |
+          aws ec2 start-instances \
+            --instance-ids i-0c41ce2766d8fe0b5 || true
 
       - name: Start RDS instance
         run: |
