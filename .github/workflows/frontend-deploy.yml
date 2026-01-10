@@ -17,11 +17,8 @@ jobs:
     env:
       # Vite environment variables (injected securely)
       VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
-      VITE_KINDE_DOMAIN: ${{ secrets.VITE_KINDE_DOMAIN }}
-      VITE_KINDE_CLIENT_ID: ${{ secrets.VITE_KINDE_CLIENT_ID }}
-      VITE_KINDE_REDIRECT_URI: ${{ secrets.VITE_KINDE_REDIRECT_URI }}
-      VITE_KINDE_LOGOUT_URI: ${{ secrets.VITE_KINDE_LOGOUT_URI }}
       VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
+      VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
 
     steps:
       # 1. Checkout frontend source repo
