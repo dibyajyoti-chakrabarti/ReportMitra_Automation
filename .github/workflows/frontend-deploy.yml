@@ -14,8 +14,8 @@ jobs:
     name: Build & Deploy Frontend to S3 + CloudFront
     runs-on: ubuntu-latest
 
+    # ✅ Expose GitHub Secrets as ENV vars (CRITICAL)
     env:
-      # Vite environment variables (injected securely)
       VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
       VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
       VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }}
@@ -45,7 +45,11 @@ jobs:
       # 4. Build frontend (production)
       - name: Build frontend
         working-directory: ReportMitra_FullStack/frontend
-        run: npm run build -- --mode production
+        run: |
+          echo "VITE_API_BASE_URL=$VITE_API_BASE_URL" > .env.production
+          echo "VITE_BACKEND_URL=$VITE_BACKEND_URL" >> .env.production
+          echo "VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID" >> .env.production
+          npm run build -- --mode production
 
       # 5. Configure AWS credentials via OIDC
       - name: Configure AWS credentials
@@ -54,7 +58,7 @@ jobs:
           role-to-assume: arn:aws:iam::855386719823:role/github-frontend-deploy-role
           aws-region: ap-south-1
 
-      # 6. Sync build output to S3 (full sync)
+      # 6. Deploy build output to S3
       - name: Deploy to S3
         run: |
           aws s3 sync ReportMitra_FullStack/frontend/dist \
