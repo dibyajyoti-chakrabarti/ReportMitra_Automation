@@ -22,7 +22,7 @@ jobs:
         with:
           host: ${{ secrets.ADMIN_EC2_HOST }}
           username: ${{ secrets.ADMIN_EC2_USER }}
-          key: ${{ secrets.ADMIN_EC2_SSH_KEY }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ReportMitra_Admin/backend
             git pull origin main
