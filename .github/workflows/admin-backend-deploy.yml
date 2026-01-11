@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.ADMIN_EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd ReportMitra_Admin/backend
+            cd Reportmitra_Admin/backend
             git pull origin main
             source venv/bin/activate
             sudo systemctl restart gunicorn
