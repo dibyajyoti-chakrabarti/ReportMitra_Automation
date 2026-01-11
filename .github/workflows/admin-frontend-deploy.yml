@@ -1,0 +1,55 @@
+name: Admin Frontend CI/CD Deployment
+
+on:
+  repository_dispatch:
+    types: [admin-frontend-deploy]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-admin-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Admin Repository
+        uses: actions/checkout@v4
+        with:
+          repository: dibyajyoti-chakrabarti/ReportMitra_Admin
+          ref: main
+          path: ReportMitra_Admin
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        working-directory: ReportMitra_Admin/frontend
+        run: npm ci
+
+      - name: Build admin frontend
+        working-directory: ReportMitra_Admin/frontend
+        env:
+          VITE_ENV: ${{ secrets.ADMIN_VITE_ENV }}
+          VITE_API_BASE: ${{ secrets.ADMIN_VITE_API_BASE }}
+          VITE_ENABLE_LOGS: ${{ secrets.ADMIN_VITE_ENABLE_LOGS }}
+        run: npm run build
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::855386719823:role/github-infra-control-role
+          aws-region: ap-south-1
+
+      - name: Sync admin frontend to S3
+        run: |
+          aws s3 sync ReportMitra_Admin/frontend/dist s3://www.admin.reportmitra.in --delete
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id E2NM5JK7NTU4L7 \
+            --paths "/*"

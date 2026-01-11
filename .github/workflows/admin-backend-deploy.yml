@@ -1,0 +1,31 @@
+name: Admin Backend CI/CD Deployment
+
+on:
+  repository_dispatch:
+    types: [admin-backend-deploy]
+  workflow_dispatch:
+
+jobs:
+  deploy-admin-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Admin Repository
+        uses: actions/checkout@v4
+        with:
+          repository: dibyajyoti-chakrabarti/ReportMitra_Admin
+          ref: main
+          path: ReportMitra_Admin
+
+      - name: Deploy admin backend via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.ADMIN_EC2_HOST }}
+          username: ${{ secrets.ADMIN_EC2_USER }}
+          key: ${{ secrets.ADMIN_EC2_SSH_KEY }}
+          script: |
+            cd ReportMitra_Admin/backend
+            git pull origin main
+            source venv/bin/activate
+            sudo systemctl restart gunicorn
+            sudo systemctl reload nginx
