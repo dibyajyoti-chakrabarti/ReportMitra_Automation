@@ -1,40 +1,70 @@
-# ReportMitra – Automation & CI/CD Repository
+# ReportMitra – DevOps Automation & CI/CD Orchestration Repository
 
-## 📌 Overview
+## 📖 Introduction
 
-This repository contains **all CI/CD pipelines and infrastructure automation workflows** used to deploy, manage, and optimize the **ReportMitra ecosystem**, including:
+This repository serves as the **central automation and orchestration layer** for the entire **ReportMitra platform**, covering both:
 
-- 🌐 Citizen-facing platform (`reportmitra.in`)
-- 🛠️ Admin portal (`admin.reportmitra.in`)
-- ⚙️ Backend APIs (Django REST Framework)
-- 🚀 Frontend applications (Vite + React)
-- ☁️ AWS infrastructure lifecycle automation
-- ⏱️ Cost-optimized start/stop scheduling
+- 🌍 **Citizen-facing application** (`reportmitra.in`)
+- 🛠️ **Administrative platform** (`admin.reportmitra.in`)
 
-The primary goal of this repository is to **fully automate deployments, reduce operational overhead, and enforce consistent infrastructure practices** across environments.
+It encapsulates **all CI/CD pipelines, infrastructure lifecycle workflows, and operational automations** required to reliably deploy, manage, and optimize the system in a production AWS environment.
 
----
-
-## 🏗️ What This Repository Automates
-
-### 1. Application Deployment
-- Backend API deployment to EC2
-- Citizen frontend deployment to S3 + CloudFront
-- Admin frontend deployment to S3 + CloudFront
-
-### 2. Infrastructure Lifecycle
-- Automated start/stop of EC2 instances
-- Manual override workflows for infrastructure control
-- Cron-based cost optimization
-
-### 3. CI/CD Pipelines
-- Git-based triggers (on `main` branch)
-- Environment-safe deployments
-- Zero-downtime update strategy
+This repository intentionally contains **no application business logic**.  
+Instead, it focuses purely on **deployment, infrastructure control, and operational reliability**.
 
 ---
 
-## 📁 Repository Structure
+## 🎯 Objectives of This Repository
+
+The design of this repository is guided by the following objectives:
+
+1. **Full Automation**
+   - No manual SSH-based deployments
+   - No manual frontend uploads
+   - No manual server start/stop for routine operations
+
+2. **Separation of Concerns**
+   - Citizen and Admin systems are deployed independently
+   - Frontend and backend lifecycles are decoupled
+   - Infrastructure control is isolated from application deployment
+
+3. **Operational Safety**
+   - Role separation between admin and citizen services
+   - Minimal blast radius for failures
+   - Manual override pipelines for emergencies
+
+4. **Cost Optimization**
+   - Infrastructure is not kept running unnecessarily
+   - Time-based automation aligns with real operational usage
+
+5. **Scalability & Maintainability**
+   - Easy onboarding for new engineers
+   - Predictable deployment behavior
+   - Extendable pipelines
+
+---
+
+## 🧱 Platform Architecture Context
+
+The ReportMitra ecosystem consists of:
+
+### Backend
+- Django REST Framework
+- Single unified MySQL database (Amazon RDS)
+- Hosted on Amazon EC2
+- Shared by both admin and citizen applications
+
+### Frontend
+- Vite + React (JavaScript)
+- Tailwind CSS
+- Static asset hosting on Amazon S3
+- Distributed via Amazon CloudFront
+
+This repository **does not provision infrastructure**, but **controls and operates it** once provisioned.
+
+---
+
+## 📁 Repository Structure & Responsibility
 
 ```text
 .
