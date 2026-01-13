@@ -1,30 +1,49 @@
-# ReportMitra Infrastructure Automation
+# ReportMitra – Automation & CI/CD Repository
 
-This repository manages **cost-optimized AWS infrastructure automation**
-for the ReportMitra project using **GitHub Actions + AWS OIDC**.
+## 📌 Overview
 
-## Key Highlights
-- No AWS access keys used
-- Secure GitHub → AWS authentication via OIDC
-- Least-privilege IAM role
-- Automated daily start/stop of EC2 and RDS
-- Manual override workflows for testing and recovery
+This repository contains **all CI/CD pipelines and infrastructure automation workflows** used to deploy, manage, and optimize the **ReportMitra ecosystem**, including:
 
-## Automation Schedule (IST)
-- Start Infrastructure: **10:20 AM**
-- Stop Infrastructure: **12:25 PM**
+- 🌐 Citizen-facing platform (`reportmitra.in`)
+- 🛠️ Admin portal (`admin.reportmitra.in`)
+- ⚙️ Backend APIs (Django REST Framework)
+- 🚀 Frontend applications (Vite + React)
+- ☁️ AWS infrastructure lifecycle automation
+- ⏱️ Cost-optimized start/stop scheduling
 
-> Schedules are intentionally offset to account for GitHub Actions cron drift.
+The primary goal of this repository is to **fully automate deployments, reduce operational overhead, and enforce consistent infrastructure practices** across environments.
 
-## Security Model
-- GitHub Actions assumes an AWS IAM role using OpenID Connect
-- No secrets or credentials are stored in this repository
-- Role trust is scoped to this repo and the `main` branch only
+---
 
-## Workflows
-- `infra-start.yml` – Scheduled + manual start
-- `infra-stop.yml` – Scheduled + manual stop
-- `infra-start-manual.yml` – Manual emergency/testing start
-- `infra-stop-manual.yml` – Manual emergency/testing stop
+## 🏗️ What This Repository Automates
 
-This setup reflects real-world DevOps best practices.
+### 1. Application Deployment
+- Backend API deployment to EC2
+- Citizen frontend deployment to S3 + CloudFront
+- Admin frontend deployment to S3 + CloudFront
+
+### 2. Infrastructure Lifecycle
+- Automated start/stop of EC2 instances
+- Manual override workflows for infrastructure control
+- Cron-based cost optimization
+
+### 3. CI/CD Pipelines
+- Git-based triggers (on `main` branch)
+- Environment-safe deployments
+- Zero-downtime update strategy
+
+---
+
+## 📁 Repository Structure
+
+```text
+.
+├── backend-deploy.yml
+├── frontend-deploy.yml
+├── admin-backend-deploy.yml
+├── admin-frontend-deploy.yml
+├── infra-start.yml
+├── infra-stop.yml
+├── infra-start-manual.yml
+├── infra-stop-manual.yml
+└── README.md
