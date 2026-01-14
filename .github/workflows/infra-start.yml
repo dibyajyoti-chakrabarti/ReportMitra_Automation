@@ -2,7 +2,7 @@ name: Start Infrastructure
 
 on:
   schedule:
-    - cron: "50 4 * * *"
+    - cron: "40 4 * * *"  # 10:10 AM IST (4:40 AM UTC)
   workflow_dispatch:
 
 permissions:
