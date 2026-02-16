@@ -2,7 +2,7 @@ name: Stop Infrastructure
 
 on:
   schedule:
-    - cron: "10 14 * * *"  # 7:40 PM IST (14:10 UTC)
+    - cron: "40 7 * * *"  # 1:10 PM IST (7:40 AM UTC)
   workflow_dispatch:
 
 permissions:
