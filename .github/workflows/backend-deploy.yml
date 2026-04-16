@@ -30,5 +30,3 @@ jobs:
             git pull origin main
             sudo systemctl restart gunicorn
             sudo systemctl reload nginx
-
-            
